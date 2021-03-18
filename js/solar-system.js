@@ -10,12 +10,12 @@ var light = new THREE.AmbientLight( 0xb4e7f2 );
 scene.add( light );
 
 //directionnal light :
-var light = new THREE.DirectionalLight( 0xdddddd, 0.8 );
-    light.position.set( 20, 20, 0 );
+var light = new THREE.DirectionalLight( 0xfdfcf0, 1 );
+    light.position.set(20,10,20);
     scene.add( light );
 
-//star :
-var geometry = new THREE.SphereGeometry(10, 50, 50)
+//terre :
+var Earthgeometry = new THREE.SphereGeometry(5, 50, 50)
 
     //textures :
 var loader = new THREE.TextureLoader();
@@ -23,17 +23,31 @@ var texture = loader.load("./assets/8k_earth_daymap.jpg");
 var normal = loader.load("./assets/8k_earth_normal_map.tif");
 var specular = loader.load("./assets/8k_earth_specular_map.tif");
 
-var material = new THREE.MeshPhongMaterial( {
+    //mesh:
+var Earthmaterial = new THREE.MeshPhongMaterial( {
     color: 0xaaaaaa,
     specular: 0x333333,
-    shininess: 15,
+    shininess: 25,
     map: texture,
     specularMap: specular,
     normalMap: normal
 });
 
-var star = new THREE.Mesh(geometry, material);
-scene.add(star);
+var earth = new THREE.Mesh(Earthgeometry, Earthmaterial);
+scene.add(earth);
+
+    //les nuages :
+var Cloudsgeometry = new THREE.SphereGeometry(5.05, 50, 50)
+var Cloudstexture = loader.load("./assets/8k_earth_clouds.jpg");
+var Cloudsmaterial = new THREE.MeshPhongMaterial( {
+    map: Cloudstexture,
+    transparent: true,
+    opacity: 0.4
+});
+var clouds = new THREE.Mesh(Cloudsgeometry, Cloudsmaterial);
+earth.add(clouds);
+
+
 camera.position.z = 50;
 
 var controls = new THREE.OrbitControls(camera, renderer.domElement);
