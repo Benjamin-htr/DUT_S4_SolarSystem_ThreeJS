@@ -29,7 +29,7 @@ var Sunmaterial = new THREE.MeshPhongMaterial({
 });
 
 var sun = new THREE.Mesh(Sungeometry, Sunmaterial);
-scene.add(sun);
+//scene.add(sun);
 
 //terre :
 var Earthgeometry = new THREE.SphereGeometry(5, 50, 50)
@@ -50,8 +50,8 @@ var Earthmaterial = new THREE.MeshPhongMaterial( {
 });
 
 var earth = new THREE.Mesh(Earthgeometry, Earthmaterial);
-earth.position.x = 50;
-sun.add(earth);
+earth.position.x = 40;
+//sun.add(earth);
 
     //les nuages :
 var Cloudsgeometry = new THREE.SphereGeometry(5.05, 50, 50)
@@ -78,7 +78,7 @@ var Moonmaterial = new THREE.MeshPhongMaterial({
 
 var moon = new THREE.Mesh(Moongeometry, Moonmaterial);
 moon.position.x = 10;
-earth.add(moon);
+//earth.add(moon);
 
 var spotLight = new THREE.SpotLight( 0x008000 );
 spotLight.angle = Math.PI / 11;
@@ -88,18 +88,39 @@ spotLight.castShadow = true;
 
 moon.add(spotLight);
 
+const solarSystem = new THREE.Object3D();
+const earthOrbit = new THREE.Object3D();
+earthOrbit.position.x = 40;
+const moonOrbit = new THREE.Object3D();
+moonOrbit.position.x = 2;
 
+moonOrbit.add(moon)
+//earthOrbit.add(earth)
+earthOrbit.add(moonOrbit)
+solarSystem.add(sun)
+solarSystem.add(earthOrbit)
+solarSystem.add(earth)
+
+scene.add(solarSystem);
 camera.position.z = 70;
 
 var controls = new THREE.OrbitControls(camera, renderer.domElement);
 
 var render = function () {
     requestAnimationFrame( render );
-    earth.rotation.y += .0015;
+    //rota nuages :
     clouds.rotation.y += .0015;
     clouds.rotation.z += .00100;
-    moon.rotation.y -= .015;
-    sun.rotation.y += .0015;
+    
+    //terre / elle-même :
+    earth.rotation.y +=0.01;
+    
+    //terre / soleil :
+    solarSystem.rotation.z +=0.005;
+
+    //lune / terre :
+    moonOrbit.rotation.y -= 0.01;
+    
     controls.update();
     renderer.render( scene, camera );
 };
