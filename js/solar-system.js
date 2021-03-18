@@ -14,11 +14,27 @@ var light = new THREE.DirectionalLight( 0xfdfcf0, 1 );
     light.position.set(20,10,20);
     scene.add( light );
 
+//soleil : 
+var Sungeometry = new THREE.SphereGeometry( 10, 50, 50 );
+
+    //textures :
+var loader = new THREE.TextureLoader();
+var Suntexture = loader.load("./assets/8k_sun.jpg");
+
+    //mesh :
+var Sunmaterial = new THREE.MeshPhongMaterial({
+    map: Suntexture,
+    transparent: true,
+    opacity: 1
+});
+
+var sun = new THREE.Mesh(Sungeometry, Sunmaterial);
+scene.add(sun);
+
 //terre :
 var Earthgeometry = new THREE.SphereGeometry(5, 50, 50)
 
     //textures :
-var loader = new THREE.TextureLoader();
 var texture = loader.load("./assets/8k_earth_daymap.jpg");
 var normal = loader.load("./assets/8k_earth_normal_map.tif");
 var specular = loader.load("./assets/8k_earth_specular_map.tif");
@@ -35,7 +51,7 @@ var Earthmaterial = new THREE.MeshPhongMaterial( {
 
 var earth = new THREE.Mesh(Earthgeometry, Earthmaterial);
 earth.position.x = 50;
-scene.add(earth);
+sun.add(earth);
 
     //les nuages :
 var Cloudsgeometry = new THREE.SphereGeometry(5.05, 50, 50)
@@ -61,11 +77,11 @@ var Moonmaterial = new THREE.MeshPhongMaterial({
 });
 
 var moon = new THREE.Mesh(Moongeometry, Moonmaterial);
-moon.position.x = 20;
+moon.position.x = 10;
 earth.add(moon);
 
 var spotLight = new THREE.SpotLight( 0x008000 );
-spotLight.angle = Math.PI / 18;
+spotLight.angle = Math.PI / 11;
 spotLight.position.set(1, 0, 0);
 spotLight.target = earth
 spotLight.castShadow = true;
@@ -82,7 +98,8 @@ var render = function () {
     earth.rotation.y += .0015;
     clouds.rotation.y += .0015;
     clouds.rotation.z += .00100;
-    moon.rotation.y -= .007
+    moon.rotation.y -= .015;
+    sun.rotation.y += .0015;
     controls.update();
     renderer.render( scene, camera );
 };
