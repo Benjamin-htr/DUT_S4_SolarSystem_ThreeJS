@@ -3,16 +3,18 @@ var aspect = window.innerWidth / window.innerHeight;
 var camera = new THREE.PerspectiveCamera( 75, aspect, 0.1, 1000 );
 var renderer = new THREE.WebGLRenderer();
 renderer.setSize( window.innerWidth, window.innerHeight );
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 document.body.appendChild( renderer.domElement );
 
 //ambient :
-var light = new THREE.AmbientLight( 0xb4e7f2 );
-scene.add( light );
+/* var light = new THREE.AmbientLight( 0xb4e7f2, 0.3 );
+scene.add( light ); */
 
 //directionnal light :
-var light = new THREE.DirectionalLight( 0xfdfcf0, 1 );
+/* var light = new THREE.DirectionalLight( 0xfdfcf0, 1 );
     light.position.set(20,10,20);
-    scene.add( light );
+    scene.add( light ); */
 
 //soleil : 
 var Sungeometry = new THREE.SphereGeometry( 10, 50, 50 );
@@ -22,15 +24,22 @@ var loader = new THREE.TextureLoader();
 var Suntexture = loader.load("./assets/8k_sun.jpg");
 
     //mesh :
-var Sunmaterial = new THREE.MeshPhongMaterial({
+var Sunmaterial = new THREE.MeshBasicMaterial({
     map: Suntexture,
     transparent: true,
     opacity: 1
 });
 
 var sun = new THREE.Mesh(Sungeometry, Sunmaterial);
-//scene.add(sun);
+sun.receiveShadow = true;
 
+const pointLight = new THREE.PointLight( 0xffffff);
+//pointLight.position.set( 10, 10, 10 );
+sun.add( pointLight );
+
+
+const pointLightHelper = new THREE.PointLightHelper( pointLight);
+scene.add( pointLightHelper );
 //terre :
 var Earthgeometry = new THREE.SphereGeometry(5, 50, 50)
 
@@ -50,6 +59,8 @@ var Earthmaterial = new THREE.MeshPhongMaterial( {
 });
 
 var earth = new THREE.Mesh(Earthgeometry, Earthmaterial);
+earth.castShadow = true;
+earth.receiveShadow = true;
 earth.position.x = 40;
 //sun.add(earth);
 
@@ -63,7 +74,7 @@ var Cloudsmaterial = new THREE.MeshPhongMaterial( {
 });
 var clouds = new THREE.Mesh(Cloudsgeometry, Cloudsmaterial);
 
-earth.add(clouds);
+//earth.add(clouds);
 
 
 //lune :
@@ -77,16 +88,21 @@ var Moonmaterial = new THREE.MeshPhongMaterial({
 });
 
 var moon = new THREE.Mesh(Moongeometry, Moonmaterial);
+moon.receiveShadow = true;
 moon.position.x = 10;
 //earth.add(moon);
 
-var spotLight = new THREE.SpotLight( 0x008000 );
-spotLight.angle = Math.PI / 11;
-spotLight.position.set(1, 0, 0);
-spotLight.target = earth
-spotLight.castShadow = true;
+/* var moonLight = new THREE.SpotLight( 0x008000, 5, 10 );
+moonLight.angle = Math.PI / 11;
+moonLight.position.set(1, 0, 0);
+moonLight.target = earth
+moonLight.castShadow = true;
 
-moon.add(spotLight);
+
+const spotLightHelper = new THREE.SpotLightHelper( moonLight);
+scene.add( spotLightHelper );
+
+moon.add(moonLight); */
 
 const solarSystem = new THREE.Object3D();
 const earthOrbit = new THREE.Object3D();
@@ -113,14 +129,14 @@ var render = function () {
     clouds.rotation.z += .00100;
     
     //terre / elle-même :
-    earth.rotation.y +=0.01;
+    //earth.rotation.y +=0.01;
     
     //terre / soleil :
-    solarSystem.rotation.z +=0.005;
+    //solarSystem.rotation.z +=0.005;
 
     //lune / terre :
-    moonOrbit.rotation.y -= 0.01;
-    
+    //moonOrbit.rotation.y -= 0.01;
+
     controls.update();
     renderer.render( scene, camera );
 };
