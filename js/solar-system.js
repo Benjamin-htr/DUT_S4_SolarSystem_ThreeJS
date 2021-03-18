@@ -64,10 +64,13 @@ var moon = new THREE.Mesh(Moongeometry, Moonmaterial);
 moon.position.x = 20;
 earth.add(moon);
 
+var spotLight = new THREE.SpotLight( 0x008000 );
+spotLight.angle = Math.PI / 18;
+spotLight.position.set(1, 0, 0);
+spotLight.target = earth
+spotLight.castShadow = true;
 
-
-
-
+moon.add(spotLight);
 
 
 camera.position.z = 70;
@@ -75,11 +78,13 @@ camera.position.z = 70;
 var controls = new THREE.OrbitControls(camera, renderer.domElement);
 
 var render = function () {
-  requestAnimationFrame( render );
-  //cube.rotation.x += 0.1;
-  //cube.rotation.y += 0.1;
-  controls.update();
-  renderer.render( scene, camera );
+    requestAnimationFrame( render );
+    earth.rotation.y += .0015;
+    clouds.rotation.y += .0015;
+    clouds.rotation.z += .00100;
+    moon.rotation.y -= .007
+    controls.update();
+    renderer.render( scene, camera );
 };
 
 render();
