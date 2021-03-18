@@ -26,15 +26,15 @@ var Suntexture = loader.load("./assets/8k_sun.jpg");
     //mesh :
 var Sunmaterial = new THREE.MeshBasicMaterial({
     map: Suntexture,
-    transparent: true,
     opacity: 1
 });
 
 var sun = new THREE.Mesh(Sungeometry, Sunmaterial);
 sun.receiveShadow = true;
 
-const pointLight = new THREE.PointLight( 0xffffff);
+const pointLight = new THREE.PointLight( 0xffffff, 3, 0, 2);
 //pointLight.position.set( 10, 10, 10 );
+pointLight.castShadow = true;
 sun.add( pointLight );
 
 
@@ -54,8 +54,8 @@ var Earthmaterial = new THREE.MeshPhongMaterial( {
     specular: 0x333333,
     shininess: 25,
     map: texture,
-    specularMap: specular,
-    normalMap: normal
+    //specularMap: specular,
+    //normalMap: normal
 });
 
 var earth = new THREE.Mesh(Earthgeometry, Earthmaterial);
@@ -70,43 +70,61 @@ var Cloudstexture = loader.load("./assets/8k_earth_clouds.jpg");
 var Cloudsmaterial = new THREE.MeshPhongMaterial( {
     map: Cloudstexture,
     transparent: true,
-    opacity: 0.4
+    shininess: 0,
+    opacity: 0.8,
 });
-var clouds = new THREE.Mesh(Cloudsgeometry, Cloudsmaterial);
 
-//earth.add(clouds);
+var clouds = new THREE.Mesh(Cloudsgeometry, Cloudsmaterial);
+clouds.receiveShadow = true;
+
+earth.add(clouds);
+
+//bump :
+var Bumpgeometry = new THREE.SphereGeometry(5,  50, 50);
+var Bumptexture = loader.load("./assets/bump.jpg");
+var Bumpmaterial = new THREE.MeshPhongMaterial( {
+    map: Cloudstexture,
+    transparent: true,
+    shininess: 0,
+    opacity: 0.2,
+});
+var Bump = new THREE.Mesh(Bumpgeometry, Bumpmaterial);
+//Bump.receiveShadow = true;
+
+earth.add(Bump);
 
 
 //lune :
-var Moongeometry = new THREE.SphereGeometry( 1, 50, 50 );
+var Moongeometry = new THREE.SphereGeometry(1, 50, 50 );
 
 var Moontexture = loader.load("./assets/8k_moon.jpg");
 var Moonmaterial = new THREE.MeshPhongMaterial({
     map: Moontexture,
-    transparent: true,
+    
     opacity: 1
 });
 
 var moon = new THREE.Mesh(Moongeometry, Moonmaterial);
 moon.receiveShadow = true;
+moon.castShadow = true;
 moon.position.x = 10;
 //earth.add(moon);
 
-/* var moonLight = new THREE.SpotLight( 0x008000, 5, 10 );
-moonLight.angle = Math.PI / 11;
+var moonLight = new THREE.SpotLight( 0x008000, 5, 10 );
+moonLight.angle = Math.PI / 7;
 moonLight.position.set(1, 0, 0);
 moonLight.target = earth
-moonLight.castShadow = true;
 
 
-const spotLightHelper = new THREE.SpotLightHelper( moonLight);
-scene.add( spotLightHelper );
 
-moon.add(moonLight); */
+/* const spotLightHelper = new THREE.SpotLightHelper( moonLight);
+scene.add( spotLightHelper ); */
+
+moon.add(moonLight);
 
 //Stars :
-var Stargeometry = new THREE.SphereGeometry(200, 50, 50);
-var Starmaterial = new THREE.MeshPhongMaterial({
+var Stargeometry = new THREE.SphereGeometry(600, 50, 50);
+var Starmaterial = new THREE.MeshBasicMaterial({
     map: new THREE.ImageUtils.loadTexture("./assets/8k_stars_milky_way.jpg"),
     side: THREE.DoubleSide,
     shininess: 0
@@ -114,7 +132,6 @@ var Starmaterial = new THREE.MeshPhongMaterial({
 
 var stars = new THREE.Mesh(Stargeometry, Starmaterial);
 scene.add(stars);
-
 
 
 const solarSystem = new THREE.Object3D();
@@ -136,19 +153,19 @@ camera.position.z = 70;
 var controls = new THREE.OrbitControls(camera, renderer.domElement);
 
 var render = function () {
-    requestAnimationFrame( render );
+    requestAnimationFrame(render);
     //rota nuages :
     clouds.rotation.y += .0015;
     clouds.rotation.z += .00100;
     
     //terre / elle-même :
-    //earth.rotation.y +=0.01;
+    earth.rotation.y +=0.01;
     
     //terre / soleil :
-    //solarSystem.rotation.z +=0.005;
+    solarSystem.rotation.z +=0.005;
 
     //lune / terre :
-    //moonOrbit.rotation.y -= 0.01;
+    moonOrbit.rotation.y -= 0.01;
 
     controls.update();
     renderer.render( scene, camera );
