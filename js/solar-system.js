@@ -104,6 +104,19 @@ scene.add( spotLightHelper );
 
 moon.add(moonLight); */
 
+//Stars :
+var Stargeometry = new THREE.SphereGeometry(200, 50, 50);
+var Starmaterial = new THREE.MeshPhongMaterial({
+    map: new THREE.ImageUtils.loadTexture("./assets/8k_stars_milky_way.jpg"),
+    side: THREE.DoubleSide,
+    shininess: 0
+});
+
+var stars = new THREE.Mesh(Stargeometry, Starmaterial);
+scene.add(stars);
+
+
+
 const solarSystem = new THREE.Object3D();
 const earthOrbit = new THREE.Object3D();
 earthOrbit.position.x = 40;
