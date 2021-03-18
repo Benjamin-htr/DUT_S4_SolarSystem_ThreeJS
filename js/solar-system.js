@@ -34,6 +34,7 @@ var Earthmaterial = new THREE.MeshPhongMaterial( {
 });
 
 var earth = new THREE.Mesh(Earthgeometry, Earthmaterial);
+earth.position.x = 50;
 scene.add(earth);
 
     //les nuages :
@@ -45,10 +46,31 @@ var Cloudsmaterial = new THREE.MeshPhongMaterial( {
     opacity: 0.4
 });
 var clouds = new THREE.Mesh(Cloudsgeometry, Cloudsmaterial);
+
 earth.add(clouds);
 
 
-camera.position.z = 50;
+//lune :
+var Moongeometry = new THREE.SphereGeometry( 1, 50, 50 );
+
+var Moontexture = loader.load("./assets/8k_moon.jpg");
+var Moonmaterial = new THREE.MeshPhongMaterial({
+    map: Moontexture,
+    transparent: true,
+    opacity: 1
+});
+
+var moon = new THREE.Mesh(Moongeometry, Moonmaterial);
+moon.position.x = 20;
+earth.add(moon);
+
+
+
+
+
+
+
+camera.position.z = 70;
 
 var controls = new THREE.OrbitControls(camera, renderer.domElement);
 
